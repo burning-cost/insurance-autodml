@@ -150,7 +150,7 @@ class TestPremiumElasticitySegments:
         X, D, Y, _ = make_small_data(n=400)
         model = PremiumElasticity(n_folds=2, random_state=0)
         model.fit(X, D, Y)
-        segments = np.where(X[:, 0] > 0, "high_age", "low_age")
+        segments = np.where(X[:, 0] > np.median(X[:, 0]), "high_age", "low_age")
         results = model.effect_by_segment(segments)
         assert isinstance(results, list)
         assert len(results) == 2
@@ -159,7 +159,7 @@ class TestPremiumElasticitySegments:
         X, D, Y, _ = make_small_data(n=400)
         model = PremiumElasticity(n_folds=2, random_state=0)
         model.fit(X, D, Y)
-        segments = np.where(X[:, 0] > 0, "high", "low")
+        segments = np.where(X[:, 0] > np.median(X[:, 0]), "high", "low")
         results = model.effect_by_segment(segments)
         names = {sr.segment_name for sr in results}
         assert names == {"high", "low"}

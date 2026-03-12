@@ -199,11 +199,15 @@ class SyntheticContinuousDGP:
 
         # --- Selection ---
         if include_selection:
-            # Renewal probability: logistic(a - b * D/base_premium)
-            D_std = (D - D.mean()) / D.std()
-            logit_s = 1.5 - self.selection_strength * D_std
-            pi_s = 1.0 / (1.0 + np.exp(-logit_s))
-            S = rng.binomial(1, pi_s).astype(float)
+            # Renewal probability: logistic(-selection_strength * D_std)
+            # When selection_strength=0: all policies renew (S=1 everywhere).
+            D_std = (D - D.mean()) / (D.std() + 1e-8)
+            if self.selection_strength == 0.0:
+                S = np.ones(n, dtype=float)
+            else:
+                logit_s = -self.selection_strength * D_std
+                pi_s = 1.0 / (1.0 + np.exp(-logit_s))
+                S = rng.binomial(1, pi_s).astype(float)
             # Mask outcomes for non-renewers
             Y_obs = Y.copy()
             Y_obs[S == 0] = np.nan
