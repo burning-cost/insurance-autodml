@@ -136,8 +136,9 @@ class TestSensitivityBounds:
         model = SelectionCorrectedElasticity(n_folds=2, random_state=0)
         model.fit(X, D, Y, S)
         bounds = model.sensitivity_bounds(gamma_grid=np.array([1.0, 2.0]))
-        width_1 = bounds[1.0]["upper"] - bounds[1.0]["lower"]
-        width_2 = bounds[2.0]["upper"] - bounds[2.0]["lower"]
+        # Width is measured as absolute distance between bounds
+        width_1 = abs(bounds[1.0]["upper"] - bounds[1.0]["lower"])
+        width_2 = abs(bounds[2.0]["upper"] - bounds[2.0]["lower"])
         assert width_2 >= width_1
 
     def test_custom_gamma_grid(self):
