@@ -193,9 +193,3 @@ Note: `insurance-autodml` functionality has been absorbed into `insurance-causal
 ---
 
 Built by [Burning Cost](https://github.com/burning-cost) — insurance pricing tools for practitioners.
-
-## Performance
-
-No formal benchmark yet. See `insurance-causal` for performance characteristics of DML-based elasticity estimation. The Riesz representer approach in this library has similar runtime characteristics to `CausalForestDML` since both use cross-fitted CatBoost nuisance models.
-
-The key advantage of the Riesz approach over GPS-based continuous treatment DML is numerical stability, not speed. On renewal portfolios where premium is partially determined by underwriting rules (causing multimodal treatment distributions), GPS density estimation can produce extreme weights that inflate variance. The Riesz minimax regression avoids this; point estimates are more stable and confidence intervals are narrower in practice on insurance data.
