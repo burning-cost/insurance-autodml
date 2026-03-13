@@ -179,11 +179,23 @@ report.to_json("elasticity_report.json")
 - Hirshberg & Wager (2021). Augmented minimax linear estimation. *Annals of Statistics* 49(6):3206-3227.
 - arXiv:2601.08643. Automatic debiased machine learning and sensitivity analysis for sample selection models.
 
+## Performance
+
+No formal benchmark yet. The Riesz representer approach is not benchmarked against GPS-based double ML here because the key claim is about numerical stability, not asymptotic efficiency — both approaches are root-n-consistent when their assumptions hold. The Riesz method wins when the conditional treatment density p(D|X) is hard to estimate (multimodal premium distributions, selection-driven tails), which is the common case in UK motor/home renewal portfolios. On well-behaved treatment distributions, GPS-based DML is equally valid. As a rough guide: if your propensity model for treatment assignment produces near-zero or near-one predicted probabilities for a substantial fraction of the portfolio (>5%), switch to the Riesz approach. The fit time for the AME estimator with 5-fold cross-fitting on 10,000 policies is 2-5 minutes on a standard CPU; the DoseResponseCurve adds evaluation time proportional to the number of grid points.
+
+
 ## Related libraries
 
-- [insurance-causal](https://github.com/burning-cost/insurance-causal) — binary treatment effects via DoubleML
-- [insurance-elasticity](https://github.com/burning-cost/insurance-elasticity) — GLM-based elasticity without causal identification
+- [insurance-causal](https://github.com/burning-cost/insurance-causal) — binary and continuous treatment effects via DoubleML; includes the `elasticity` subpackage (FCA PS21/5 renewal pricing optimisation) and the `autodml` subpackage (this library, re-exported for backwards compatibility)
+
+Note: `insurance-autodml` functionality has been absorbed into `insurance-causal` as the `insurance_causal.autodml` subpackage. The standalone `insurance-autodml` package remains installable for backwards compatibility.
 
 ---
 
 Built by [Burning Cost](https://github.com/burning-cost) — insurance pricing tools for practitioners.
+
+## Performance
+
+No formal benchmark yet. See `insurance-causal` for performance characteristics of DML-based elasticity estimation. The Riesz representer approach in this library has similar runtime characteristics to `CausalForestDML` since both use cross-fitted CatBoost nuisance models.
+
+The key advantage of the Riesz approach over GPS-based continuous treatment DML is numerical stability, not speed. On renewal portfolios where premium is partially determined by underwriting rules (causing multimodal treatment distributions), GPS density estimation can produce extreme weights that inflate variance. The Riesz minimax regression avoids this; point estimates are more stable and confidence intervals are narrower in practice on insurance data.
