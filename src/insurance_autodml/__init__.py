@@ -48,7 +48,12 @@ from insurance_autodml._types import (
     OutcomeFamily,
 )
 
-__version__ = "0.1.0"
+from importlib.metadata import version, PackageNotFoundError
+
+try:
+    __version__ = version("insurance-autodml")
+except PackageNotFoundError:
+    __version__ = "0.0.0"  # not installed
 
 __all__ = [
     # Main estimators
