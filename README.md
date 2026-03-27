@@ -1,3 +1,5 @@
+⚠️ **This package has been merged into [`insurance-causal`](https://github.com/burning-cost/insurance-causal).** This repository is archived. Install `insurance-causal` instead.
+
 # insurance-autodml
 
 Automatic Debiased ML via Riesz Representers for continuous treatment causal inference in UK personal lines insurance pricing.
